@@ -295,7 +295,7 @@ public class MailBoxPlugin extends JavaPlugin
 		try
 		{
 			Statement stmt = conn.createStatement();
-			String replace = owner.replace('\'', 'x');
+			owner.replace('\'', 'x');
 
 			boolean remove_self = true;
 			if (!player.getName().equals(owner))
@@ -367,7 +367,7 @@ public class MailBoxPlugin extends JavaPlugin
 	public String createMailBox(Player player, String owner, Block block)
 	{
 		Connection conn = prepareSQL();
-		String replace = owner.replace('\'', 'x');
+		owner.replace('\'', 'x');
 
 		boolean self_creating = true;
 		Player pl = null;
@@ -375,7 +375,7 @@ public class MailBoxPlugin extends JavaPlugin
 		if (!owner.equals(player.getName()))
 		{
 			self_creating = false;
-			pl = Bukkit.getServer().getPlayer(owner);		
+			pl = Bukkit.getServer().getPlayer(owner);
 			if (pl == null)
 			{
 				return "Player " + owner + " must be online to have a mailbox created!";
@@ -670,9 +670,15 @@ public class MailBoxPlugin extends JavaPlugin
 				economy.depositPlayer(sender.getName(), -fee);
 			}
 			sender.sendMessage("SENDING ITEM");
-			
-			Chest chest = (Chest)l.getBlock().getState();
-
+			Chest chest = null;
+			if( l.getBlock().getType() == Material.CHEST )
+			{
+				chest = (Chest)l.getBlock().getState();
+			}
+			else
+			{
+				return "§c" + receiver + " doesn't have a valid mailbox!";
+			}
 			ItemStack _package = sender.getInventory().getItemInHand();
 
 			if (_package.getType() == Material.AIR)
